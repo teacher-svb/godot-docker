@@ -6,22 +6,17 @@ services:
       - DISPLAY=${DISPLAY}
       - QT_X11_NO_MITSHM=1
       - SDL_AUDIODRIVER=alsa
+      - XDG_RUNTIME_DIR=/run/user/${UID}
+      - UID=${UID}
+      - GID=${GID}
+      - PIPEWIRE_REMOTE=pipewire-0
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix  # X11 socket
       - /dev/dri:/dev/dri              # GPU access for rendering
+      - /run/user/${UID}:/run/user/${UID} # mount sockets for pipewire
+      - ./asound.conf:/etc/asound.conf:ro # ALSA configuration file
       - ${HOME}/Projects:/projects
-      - /run/user/${UID}/pulse:/tmp/pulse:ro  # Pulse socket
-      - ${HOME}/.config/pulse/cookie:/root/.config/pulse/cookie:ro
-      - /dev/snd:/dev/snd
-      - /etc/asound.conf:/etc/asound.conf:ro
-      # - ~/.asoundrc:/root/.asoundrc:ro
-      - ./asound.conf:/etc/asound.conf:ro
     devices:
       - /dev/dri                       # GPU rendering interface
-      - /dev/snd
     network_mode: host                 # So DISPLAY works
     privileged: true                   # Needed for direct /dev/dri access
-    security_opt:
-      - apparmor:unconfined
-    cap_add:
-      - SYS_ADMIN

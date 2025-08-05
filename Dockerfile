@@ -3,8 +3,6 @@ FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-USER root
-
 # Install dependencies for X11 + OpenGL rendering
 RUN apt-get update && apt-get install -y \
     x11-apps \
@@ -21,9 +19,23 @@ RUN apt-get update && apt-get install -y \
     libxrandr2 \
     libasound2 \
     libpulse0 \
-    pulseaudio \
+    # pulseaudio \
+    # pipewire \
+    # pipewire-pulse \
     libxi6 \
     && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y \
+    alsa-utils \
+    libasound2-plugins \
+    pipewire \
+    pipewire-audio-client-libraries
+
+RUN apt-get update && apt-get install -y \
+    pipewire \
+    libpipewire-0.3-0 \
+    libpipewire-0.3-modules \
+    libasound2-plugins
 
 RUN wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
 RUN dpkg -i packages-microsoft-prod.deb
